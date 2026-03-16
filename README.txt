@@ -56,7 +56,12 @@ Files
   The reconciliation script.
 
 - ltg-updater-1.0.3.jar
-  The Sonatype LTG updater JAR used after you generate the reconciled CSV.
+  Optional local copy of the Sonatype LTG updater JAR. It is not required to
+  run the reconciliation script.
+
+To download the latest available LTG updater JAR and the latest source LTG CSV,
+see the Sonatype community post:
+https://community.sonatype.com/t/update-your-iq-server-license-threat-groups/3094
 
 How To Run
 ----------
@@ -84,9 +89,9 @@ python3 reconcile_ltg.py \
 Generated Output Files
 ----------------------
 - license_threat_groups_reconciled.csv
-  The CSV to import with the Sonatype LTG updater. This preserves existing IQ
-  mappings and only uses the source CSV for licenses that do not already have
-  an LTG assignment.
+  The CSV to import with the Sonatype LTG updater after reconciliation. This
+  preserves existing IQ mappings and only uses the source CSV for licenses that
+  do not already have an LTG assignment.
 
 - license_threat_groups_reconciled_report.json
   Full machine-readable report describing the reconciliation results.
@@ -134,7 +139,12 @@ Typical Workflow
    - license_threat_groups_added_licenses.csv
    - license_threat_groups_unresolved.csv
 
-6. Import license_threat_groups_reconciled.csv using ltg-updater-1.0.3.jar.
+6. Download the latest LTG updater JAR and latest Sonatype source LTG CSV from:
+
+   https://community.sonatype.com/t/update-your-iq-server-license-threat-groups/3094
+
+7. Import license_threat_groups_reconciled.csv using the latest LTG updater
+   JAR.
 
 Troubleshooting
 ---------------
