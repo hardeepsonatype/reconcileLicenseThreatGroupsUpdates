@@ -46,6 +46,10 @@ script, unless you plan to pass explicit paths on the command line:
 - licenseThreatGroup.json
 - license_threat_groups_02272026.csv
 
+The source CSV filename changes over time. You can pass the current filename
+to the script explicitly, or let the script auto-detect it when there is only
+one matching source CSV in the directory.
+
 The source CSV is expected to have no header row and to use this format:
 
 license_id,license_threat_group_name
@@ -73,6 +77,10 @@ Example:
 
 cd /Users/hardeepatkar/Development/Python/reconcileLTGS
 python3 reconcile_ltg.py
+
+Example with an explicit source CSV filename:
+
+python3 reconcile_ltg.py license_threat_groups_02272026.csv
 
 Optional: show command-line help
 

@@ -65,6 +65,12 @@ def parse_args() -> argparse.Namespace:
         )
     )
     parser.add_argument(
+        "source_csv",
+        nargs="?",
+        type=Path,
+        help="Path to the source LTG updater CSV.",
+    )
+    parser.add_argument(
         "--licenses",
         type=Path,
         default=Path("license.json"),
@@ -88,7 +94,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--input-csv",
         type=Path,
-        default=Path("license_threat_groups_02272026.csv"),
+        default=None,
         help="Path to the source LTG updater CSV.",
     )
     parser.add_argument(
@@ -203,6 +209,47 @@ def auto_detect_threat_group_export(base_dir: Path, exclude: set[Path]) -> Path 
         if rows:
             return candidate
     return None
+
+
+def auto_detect_source_csv(base_dir: Path) -> Path | None:
+    excluded_names = {
+        "license_threat_groups_reconciled.csv",
+        "license_threat_groups_unresolved.csv",
+        "license_threat_groups_changed_mappings.csv",
+        "license_threat_groups_added_licenses.csv",
+    }
+    candidates = [
+        path
+        for path in sorted(base_dir.glob("license_threat_groups*.csv"))
+        if path.name not in excluded_names
+    ]
+    if len(candidates) == 1:
+        return candidates[0]
+    if not candidates:
+        return None
+    fail(
+        "Multiple possible source CSV files were found. Please specify one with "
+        "'--input-csv <file>' or as the first positional argument."
+    )
+    raise AssertionError("unreachable")
+
+
+def resolve_source_csv(args: argparse.Namespace, base_dir: Path) -> Path:
+    provided_paths = [path for path in (args.source_csv, args.input_csv) if path is not None]
+    if len(provided_paths) == 2 and provided_paths[0].resolve() != provided_paths[1].resolve():
+        fail("Provide the source CSV only once, either positionally or with --input-csv.")
+    if provided_paths:
+        return provided_paths[0].resolve()
+
+    detected = auto_detect_source_csv(base_dir)
+    if detected is not None:
+        return detected.resolve()
+
+    fail(
+        "Could not find a source LTG CSV automatically. Please specify it with "
+        "'--input-csv <file>' or as the first positional argument."
+    )
+    raise AssertionError("unreachable")
 
 
 def load_licenses(path: Path) -> set[str]:
@@ -460,7 +507,7 @@ def main() -> None:
 
     licenses_path = args.licenses.resolve()
     assignments_path = args.assignments.resolve()
-    source_csv_path = args.input_csv.resolve()
+    source_csv_path = resolve_source_csv(args, licenses_path.parent)
     output_csv_path = args.output_csv.resolve()
     report_json_path = args.report_json.resolve()
     unresolved_csv_path = args.unresolved_csv.resolve()
