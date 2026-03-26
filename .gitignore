@@ -12,3 +12,4 @@ ltg-updater-*.jar
 # Source LTG update files and generated outputs
 license_threat_groups_*.csv
 license_threat_groups_reconciled_report.json
+gitUpload/
