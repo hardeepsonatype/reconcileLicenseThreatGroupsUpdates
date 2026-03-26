@@ -1,0 +1,14 @@
+__pycache__/
+.DS_Store
+
+# IQ export inputs
+license.json
+licenseThreatGroup.json
+licenseThreatGroupLicense.json
+
+# Optional local tools
+ltg-updater-*.jar
+
+# Source LTG update files and generated outputs
+license_threat_groups_*.csv
+license_threat_groups_reconciled_report.json
